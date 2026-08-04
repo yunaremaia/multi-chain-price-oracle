@@ -180,5 +180,27 @@ app.get("/.well-known/x402.json", (c: any) =>
   }),
 );
 
+// LLM discovery (llms.txt standard)
+app.get("/llms.txt", (c: any) =>
+  c.text(`# Multi-Chain Price Oracle
+> multi-chain-price-oracle.vercel.app
+
+Live USD prices for 20+ tokens (BTC, ETH, SOL, USDC, USDT, DAI, BNB, MATIC, ARB, AVAX, OP, LINK, UNI, AAVE, WBTC, CRV, MKR, COMP, SUSHI, DYDX) via CoinGecko with 60s caching.
+
+## Endpoints (x402, USDC on Base)
+
+- POST /entrypoints/price/invoke — input: {"symbols":["BTC","ETH"]} — $0.001/call — returns {prices: {BTC: {usd}}}
+- POST /entrypoints/health/invoke — free — service status + supported tokens
+
+## Payment (x402)
+
+1. POST to /entrypoints/price/invoke → 402 with payment requirements (payTo, maxAmountRequired, asset)
+2. Pay USDC on Base, attach X-PAYMENT header
+3. Retry → JSON with live prices
+
+No API keys, no signup. Discovery: /.well-known/x402.json
+`),
+);
+
 export default app;
 export { app, SYMBOL_TO_CG };
