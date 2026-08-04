@@ -1,0 +1,33 @@
+{
+  "name": "multi-chain-price-oracle",
+  "description": "Live USD prices for 20+ crypto tokens via CoinGecko with 60s caching. Pay-per-call x402 on Base mainnet.",
+  "url": "https://multi-chain-price-oracle.vercel.app",
+  "version": "1.0.0",
+  "provider": {
+    "organization": "Yunare Maia",
+    "url": "https://github.com/yunaremaia"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "endpoints": [
+    {
+      "key": "price",
+      "path": "/entrypoints/price/invoke",
+      "description": "Get live USD price for one or more tokens",
+      "price": "$0.001/call USDC on Base"
+    },
+    {
+      "key": "health",
+      "path": "/entrypoints/health/invoke",
+      "description": "Health check",
+      "price": "free"
+    }
+  ],
+  "discovery": {
+    "x402": "https://multi-chain-price-oracle.vercel.app/.well-known/x402.json",
+    "llms": "https://multi-chain-price-oracle.vercel.app/llms.txt",
+    "openapi": "https://multi-chain-price-oracle.vercel.app/openapi.json"
+  }
+}
