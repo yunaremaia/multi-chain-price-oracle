@@ -159,8 +159,8 @@ app.get("/.well-known/x402.json", (c: any) =>
       "Live crypto prices across 20+ tokens via CoinGecko. Batch queries with 60s cache.",
     version: "1.0.0",
     payTo: process.env.ADDRESS ?? "",
-    network: "base-sepolia",
-    asset: "0x036CbD53842c5426634e7EADB88d31E138c4bCc8", // USDC on Base
+    network: "base",
+    asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC on Base mainnet
     endpoints: [
       {
         key: "price",
@@ -179,6 +179,25 @@ app.get("/.well-known/x402.json", (c: any) =>
     ],
   }),
 );
+
+// OpenAPI discovery
+app.get("/openapi.json", (c: any) => {
+  const spec = {
+    openapi: "3.0.3",
+    info: { title: "Multi-Chain Price Oracle", version: "1.0.0" },
+    servers: [{ url: "https://multi-chain-price-oracle.vercel.app" }],
+    paths: {
+      "/entrypoints/price/invoke": {
+        post: {
+          summary: "Get live USD prices for crypto tokens",
+          requestBody: { content: { "application/json": { schema: { type: "object" } } } },
+          responses: { "200": { description: "Price data" }, "402": { description: "x402 payment required" } },
+        },
+      },
+    },
+  };
+  return c.json(spec);
+});
 
 // LLM discovery (llms.txt standard)
 app.get("/llms.txt", (c: any) =>
