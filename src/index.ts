@@ -151,5 +151,34 @@ app.get("/health", (c: any) =>
   c.json({ ok: true, version: "1.0.0", service: "multi-chain-price-oracle" }),
 );
 
+// x402 discovery manifest (RFC-ish: lets agents find the service)
+app.get("/.well-known/x402.json", (c: any) =>
+  c.json({
+    name: "multi-chain-price-oracle",
+    description:
+      "Live crypto prices across 20+ tokens via CoinGecko. Batch queries with 60s cache.",
+    version: "1.0.0",
+    payTo: process.env.ADDRESS ?? "",
+    network: "base-sepolia",
+    asset: "0x036CbD53842c5426634e7EADB88d31E138c4bCc8", // USDC on Base
+    endpoints: [
+      {
+        key: "price",
+        path: "/entrypoints/price/invoke",
+        method: "POST",
+        price: process.env.DEFAULT_PRICE ?? "0.001",
+        description: "Get live USD price for one or more tokens",
+      },
+      {
+        key: "health",
+        path: "/entrypoints/health/invoke",
+        method: "POST",
+        price: "0",
+        description: "Service status + supported tokens",
+      },
+    ],
+  }),
+);
+
 export default app;
 export { app, SYMBOL_TO_CG };
